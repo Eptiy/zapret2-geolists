@@ -4,9 +4,9 @@ import { join } from 'node:path';
 import { domainToASCII } from 'node:url';
 
 const categories = new Set(['cloudflare', 'github', 'youtube', 'ru-available-only-inside']);
-const [geositePath, geoipPath, output = 'lists'] = process.argv.slice(2);
-if (!geositePath || !geoipPath) {
-  throw new Error('Usage: node scripts/generate.mjs geosite.dat cloudflare.txt [output]');
+const [geositePath, cloudflarePath, output = 'lists', ruPath] = process.argv.slice(2);
+if (!geositePath || !cloudflarePath) {
+  throw new Error('Usage: node scripts/generate.mjs geosite.dat cloudflare.txt [output] [ru.txt]');
 }
 
 // GeoSiteList, GeoSite and Domain are nested protobuf messages.
@@ -87,16 +87,21 @@ for (const category of categories) {
   if (!lists.get(category)?.size) throw new Error(`Missing or empty GeoSite category: ${category}`);
 }
 
-const cidrs = new Set(readFileSync(geoipPath, 'utf8').split(/\r?\n/).map(line => line.trim()).filter(Boolean));
-if (!cidrs.size) throw new Error('Empty Cloudflare GeoIP list');
-for (const line of cidrs) {
-  const match = /^([^/]+)\/(0|[1-9][0-9]{0,2})$/.exec(line);
-  const version = match && isIP(match[1]);
-  if (!version || Number(match[2]) > (version === 4 ? 32 : 128)) {
-    throw new Error(`Invalid Cloudflare CIDR: ${line}`);
+function readCidrs(path, category) {
+  const cidrs = new Set(readFileSync(path, 'utf8').split(/\r?\n/).map(line => line.trim()).filter(Boolean));
+  if (!cidrs.size) throw new Error(`Empty ${category} GeoIP list`);
+  for (const line of cidrs) {
+    const match = /^([^/]+)\/(0|[1-9][0-9]{0,2})$/.exec(line);
+    const version = match && isIP(match[1]);
+    if (!version || Number(match[2]) > (version === 4 ? 32 : 128)) {
+      throw new Error(`Invalid ${category} CIDR: ${line}`);
+    }
   }
+  return cidrs;
 }
-lists.set('cloudflare-ip', cidrs);
+
+lists.set('cloudflare-ip', readCidrs(cloudflarePath, 'Cloudflare'));
+if (ruPath) lists.set('ru-ip', readCidrs(ruPath, 'RU'));
 
 mkdirSync(output, { recursive: true });
 for (const [category, lines] of lists) {

@@ -30,8 +30,11 @@ jobs:
           curl --fail --silent --show-error --location --retry 3 --max-time 60 \
             https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/text/cloudflare.txt \
             --output "$RUNNER_TEMP/cloudflare.txt"
+          curl --fail --silent --show-error --location --retry 3 --max-time 60 \
+            https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/text/ru.txt \
+            --output "$RUNNER_TEMP/ru.txt"
       - name: Generate and validate lists
-        run: node scripts/generate.mjs "$RUNNER_TEMP/geosite.dat" "$RUNNER_TEMP/cloudflare.txt"
+        run: node scripts/generate.mjs "$RUNNER_TEMP/geosite.dat" "$RUNNER_TEMP/cloudflare.txt" lists "$RUNNER_TEMP/ru.txt"
       - name: Publish changes
         run: |
           git add -- lists/
