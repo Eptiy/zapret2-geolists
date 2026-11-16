@@ -3,10 +3,10 @@ import { isIP } from 'node:net';
 import { join } from 'node:path';
 import { domainToASCII } from 'node:url';
 
-const categories = new Set(['cloudflare', 'github', 'youtube', 'ru-available-only-inside']);
-const [geositePath, cloudflarePath, output = 'lists', ruPath] = process.argv.slice(2);
+const categories = new Set(['cloudflare', 'github', 'youtube', 'ru-available-only-inside', 'aws', 'aws-cn']);
+const [geositePath, cloudflarePath, output = 'lists', ruPath, cloudfrontPath] = process.argv.slice(2);
 if (!geositePath || !cloudflarePath) {
-  throw new Error('Usage: node scripts/generate.mjs geosite.dat cloudflare.txt [output] [ru.txt]');
+  throw new Error('Usage: node scripts/generate.mjs geosite.dat cloudflare.txt [output] [ru.txt] [cloudfront.txt]');
 }
 
 // GeoSiteList, GeoSite and Domain are nested protobuf messages.
@@ -87,6 +87,10 @@ for (const category of categories) {
   if (!lists.get(category)?.size) throw new Error(`Missing or empty GeoSite category: ${category}`);
 }
 
+const aws = lists.get('aws');
+for (const domain of lists.get('aws-cn')) aws.add(domain);
+lists.delete('aws-cn');
+
 function readCidrs(path, category) {
   const cidrs = new Set(readFileSync(path, 'utf8').split(/\r?\n/).map(line => line.trim()).filter(Boolean));
   if (!cidrs.size) throw new Error(`Empty ${category} GeoIP list`);
@@ -102,6 +106,7 @@ function readCidrs(path, category) {
 
 lists.set('cloudflare-ip', readCidrs(cloudflarePath, 'Cloudflare'));
 if (ruPath) lists.set('ru-ip', readCidrs(ruPath, 'RU'));
+if (cloudfrontPath) lists.set('cloudfront-ip', readCidrs(cloudfrontPath, 'CloudFront'));
 
 mkdirSync(output, { recursive: true });
 for (const [category, lines] of lists) {

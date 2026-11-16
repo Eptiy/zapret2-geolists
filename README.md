@@ -10,6 +10,8 @@ GitHub Actions обновляет списки ежедневно в 01:23 UTC. 
 | [ru-available-only-inside.list](lists/ru-available-only-inside.list) | Домены для `--hostlist-exclude` общего профиля |
 | [cloudflare-ip.list](lists/cloudflare-ip.list) | Подсети Cloudflare для отдельного IP-списка |
 | [ru-ip.list](lists/ru-ip.list) | Подсети категории `ru` из [GeoIP RunetFreedom](https://github.com/runetfreedom/russia-blocked-geoip/blob/release/text/ru.txt) |
+| [aws.list](lists/aws.list) | Домены AWS, включая категорию `aws-cn` |
+| [cloudfront-ip.list](lists/cloudfront-ip.list) | Подсети CloudFront из [GeoIP RunetFreedom](https://github.com/runetfreedom/russia-blocked-geoip/blob/release/text/cloudfront.txt) |
 
 Для подписки открой файл и скопируй адрес кнопки **Raw**.
 
