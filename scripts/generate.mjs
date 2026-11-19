@@ -3,7 +3,7 @@ import { isIP } from 'node:net';
 import { join } from 'node:path';
 import { domainToASCII } from 'node:url';
 
-const categories = new Set(['cloudflare', 'github', 'youtube', 'ru-available-only-inside', 'aws', 'aws-cn']);
+const categories = new Set(['cloudflare', 'github', 'youtube', 'ru-available-only-inside', 'aws', 'aws-cn', 'kakao']);
 const [geositePath, cloudflarePath, output = 'lists', ruPath, cloudfrontPath] = process.argv.slice(2);
 if (!geositePath || !cloudflarePath) {
   throw new Error('Usage: node scripts/generate.mjs geosite.dat cloudflare.txt [output] [ru.txt] [cloudfront.txt]');

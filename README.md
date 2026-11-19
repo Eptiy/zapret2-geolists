@@ -7,6 +7,7 @@ GitHub Actions обновляет списки ежедневно в 01:23 UTC. 
 | [cloudflare.list](lists/cloudflare.list) | Домены Cloudflare для общего профиля |
 | [github.list](lists/github.list) | Домены GitHub для общего профиля |
 | [youtube.list](lists/youtube.list) | Домены для профиля YouTube |
+| [kakao.list](lists/kakao.list) | Домены категории `kakao` |
 | [ru-available-only-inside.list](lists/ru-available-only-inside.list) | Домены для `--hostlist-exclude` общего профиля |
 | [cloudflare-ip.list](lists/cloudflare-ip.list) | Подсети Cloudflare для отдельного IP-списка |
 | [ru-ip.list](lists/ru-ip.list) | Подсети категории `ru` из [GeoIP RunetFreedom](https://github.com/runetfreedom/russia-blocked-geoip/blob/release/text/ru.txt) |
